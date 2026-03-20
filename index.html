@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abstração Lógica - Ferramenta Interativa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #185da9 0%, #0d3d7a 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .operator-box {
+            background: #f8f9ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .operator-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .operator-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+
+        .truth-table th,
+        .truth-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .truth-table th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .truth-table tbody tr:hover {
+            background: #f0f0f0;
+        }
+
+        .true-value {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .false-value {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .interactive-section {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-label {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #27ae60;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 33px;
+        }
+
+        .result-box {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 5px;
+            border: 2px solid #667eea;
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .exercise-section {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .exercise-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .exercise-content {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .flowchart-example {
+            background: white;
+            padding: 20px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        .flowchart-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .example-card {
+            background: white;
+            padding: 20px;
+            border-left: 5px solid #764ba2;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .example-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Abstração Lógica</h1>
+            <p class="subtitle">Aprenda Álgebra Booleana, Operadores e Fluxogramas de Forma Interativa</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('booleanos')">Operadores Booleanos</button>
+            <button class="tab-button" onclick="switchTab('simulador')">Simulador Interativo</button>
+            <button class="tab-button" onclick="switchTab('relacionais')">Operadores Relacionais</button>
+            <button class="tab-button" onclick="switchTab('fluxogramas')">Fluxogramas</button>
+            <button class="tab-button" onclick="switchTab('exercicios-rel')">Exercícios: Relacionais</button>
+            <button class="tab-button" onclick="switchTab('exercicios-flux')">Exercícios: Fluxogramas</button>
+        </div>
+
+        <!-- SEÇÃO: OPERADORES BOOLEANOS -->
+        <div id="booleanos" class="tab-content active">
+            <h2 class="section-title">Operador AND (E)</h2>
+            <div class="operator-box">
+                <div class="operator-name">Retorna V apenas se TODOS forem V</div>
+                <div class="operator-description">
+                    • V AND V = V<br>
+                    • V AND F = F<br>
+                    • F AND V = F<br>
+                    • F AND F = F
+                </div>
+                <div class="operator-description">
+                    <strong>Exemplo:</strong> Para comprar carro: Ter dinheiro AND ter habilitação. Só consegue se AMBAS forem verdadeiras!
+                </div>
+                <table class="truth-table">
+                    <thead>
+                        <tr>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>A AND B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="true-value">V</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="false-value">F</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="false-value">F</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="false-value">F</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="section-title">Operador OR (OU)</h2>
+            <div class="operator-box">
+                <div class="operator-name">Retorna V se PELO MENOS UM for V</div>
+                <div class="operator-description">
+                    • V OR V = V<br>
+                    • V OR F = V<br>
+                    • F OR V = V<br>
+                    • F OR F = F
+                </div>
+                <div class="operator-description">
+                    <strong>Exemplo:</strong> Entrar no cinema: Ter ingresso OR trabalhar no cinema. Se QUALQUER uma for V, entra!
+                </div>
+                <table class="truth-table">
+                    <thead>
+                        <tr>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>A OR B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="true-value">V</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="true-value">V</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="true-value">V</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="false-value">F</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="section-title">Operador NOT (NÃO)</h2>
+            <div class="operator-box">
+                <div class="operator-name">Inverte o valor lógico</div>
+                <div class="operator-description">
+                    • NOT V = F<br>
+                    • NOT F = V
+                </div>
+                <div class="operator-description">
+                    <strong>Exemplo:</strong> Está chovendo = V. NÃO está ensolarado = V. Inverte a condição!
+                </div>
+                <table class="truth-table">
+                    <thead>
+                        <tr>
+                            <th>A</th>
+                            <th>NOT A</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="true-value">V</span></td>
+                            <td><span class="false-value">F</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="false-value">F</span></td>
+                            <td><span class="true-value">V</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: SIMULADOR INTERATIVO -->
+        <div id="simulador" class="tab-content">
+            <h2 class="section-title">Simulador de Operadores</h2>
+
+            <div class="interactive-section">
+                <h3 style="color: #667eea; margin-bottom: 20px;">AND - Teste Interativo</h3>
+                
+                <div class="toggle-group">
+                    <div style="flex: 1;">
+                        <div class="toggle-label">Valor A:</div>
+                        <div class="toggle-switch" id="andA" onclick="toggleAnd('A')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="toggle-label">Valor B:</div>
+                        <div class="toggle-switch" id="andB" onclick="toggleAnd('B')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div>Resultado de A AND B:</div>
+                    <div class="result-value" id="andResult">
+                        <span class="false-value">F AND F = F</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interactive-section">
+                <h3 style="color: #667eea; margin-bottom: 20px;">OR - Teste Interativo</h3>
+                
+                <div class="toggle-group">
+                    <div style="flex: 1;">
+                        <div class="toggle-label">Valor A:</div>
+                        <div class="toggle-switch" id="orA" onclick="toggleOr('A')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="toggle-label">Valor B:</div>
+                        <div class="toggle-switch" id="orB" onclick="toggleOr('B')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div>Resultado de A OR B:</div>
+                    <div class="result-value" id="orResult">
+                        <span class="false-value">F OR F = F</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interactive-section">
+                <h3 style="color: #667eea; margin-bottom: 20px;">NOT - Teste Interativo</h3>
+                
+                <div class="toggle-group">
+                    <div style="flex: 1;">
+                        <div class="toggle-label">Valor A:</div>
+                        <div class="toggle-switch" id="notA" onclick="toggleNot('A')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div>Resultado de NOT A:</div>
+                    <div class="result-value" id="notResult">
+                        <span class="true-value">NOT F = V</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: OPERADORES RELACIONAIS -->
+        <div id="relacionais" class="tab-content">
+            <h2 class="section-title">Operadores Relacionais</h2>
+
+            <div class="operator-box">
+                <div class="operator-name">Comparam valores e retornam V ou F</div>
+                <div class="operator-description">
+                    <strong>== (igual):</strong> 5 == 5 → V<br>
+                    <strong>!= (diferente):</strong> 5 != 3 → V<br>
+                    <strong>></strong> (maior): 5 > 3 → V<br>
+                    <strong><</strong> (menor): 5 < 3 → F<br>
+                    <strong>>=</strong> (maior ou igual): 5 >= 5 → V<br>
+                    <strong><=</strong> (menor ou igual): 5 <= 3 → F
+                </div>
+            </div>
+
+            <div class="example-card">
+                <div class="example-title">Exemplos de Operadores Relacionais</div>
+                <div class="operator-description">
+                    <strong>Idade >= 18:</strong> Verifica se a pessoa é maior de idade<br>
+                    <strong>Preço < 100:</strong> Verifica se o preço é menor que 100<br>
+                    <strong>Código == "SENAI":</strong> Verifica se o código é exatamente "SENAI"<br>
+                    <strong>Temperatura != 0:</strong> Verifica se a temperatura é diferente de zero
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: FLUXOGRAMAS -->
+        <div id="fluxogramas" class="tab-content">
+            <h2 class="section-title">Símbolos de Fluxograma</h2>
+
+            <div class="operator-box">
+                <div class="operator-description">
+                    <strong>⭕ Oval:</strong> Início / Fim do algoritmo<br>
+                    <strong>▭ Retângulo:</strong> Processo ou Ação<br>
+                    <strong>◇ Losango:</strong> Decisão (Sim/Não)<br>
+                    <strong>▬ Retângulo duplo:</strong> Entrada / Saída de dados<br>
+                    <strong>→ Seta:</strong> Direção do fluxo
+                </div>
+            </div>
+
+            <h2 class="section-title">Exemplo: Verificar se é Par ou Ímpar</h2>
+            <div class="flowchart-example">⭕
+ ↓
+[Início]
+ ↓
+[Leia n]
+ ↓
+◇ n % 2 == 0 ?
+ ↙           ↘
+SIM          NÃO
+ ↓            ↓
+[Par]    [Ímpar]
+ ↓            ↓
+ └──────→ ⭕
+        [Fim]
+            </div>
+
+            <div class="example-card">
+                <div class="example-title">Como ler este fluxograma:</div>
+                <div class="operator-description">
+                    1. Começamos com ⭕ (Início)<br>
+                    2. Lemos um número (Leia n)<br>
+                    3. Verificamos se n dividido por 2 tem resto 0<br>
+                    4. Se SIM (resto 0): é Par<br>
+                    5. Se NÃO (resto != 0): é Ímpar<br>
+                    6. Finalizamos com ⭕ (Fim)
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: EXERCÍCIOS - OPERADORES RELACIONAIS -->
+        <div id="exercicios-rel" class="tab-content">
+            <h2 class="section-title">Exercícios: Operadores Relacionais</h2>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 1: Verificar Maioridade</div>
+                <div class="exercise-content">
+                    Um aluno tem 16 anos. Verifique se ele pode entrar em uma balada (requer 18 anos ou mais).<br>
+                    <strong>Escreva a expressão booleana que verificaria isso:</strong>
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 2: Comparação de Preços</div>
+                <div class="exercise-content">
+                    Um produto custa R$89,90. Verifique se o preço é menor que R$100.<br>
+                    <strong>Escreva a expressão booleana:</strong>
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 3: Validação de Código</div>
+                <div class="exercise-content">
+                    O código digitado foi "SENAI" e o código correto é "SENAI".<br>
+                    <strong>Verifique se estão iguais:</strong>
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 4: Temperatura Diferente de Zero</div>
+                <div class="exercise-content">
+                    A temperatura lida é 0°C. Verifique se ela é diferente de zero (há mudança de temperatura).<br>
+                    <strong>Escreva a expressão:</strong>
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 5: Idade Dentro de Intervalo</div>
+                <div class="exercise-content">
+                    Um aluno tem 17 anos. Verifique se ele pode participar de um evento (para maiores de 16 anos).<br>
+                    <strong>Escreva a expressão:</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: EXERCÍCIOS - FLUXOGRAMAS -->
+        <div id="exercicios-flux" class="tab-content">
+            <h2 class="section-title">Exercícios: Criar Fluxogramas</h2>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 1: Maior entre Dois Números</div>
+                <div class="exercise-content">
+                    <strong>Problema:</strong> Crie um fluxograma que leia dois números (A e B) e indique qual é maior.<br>
+                    <strong>Dica:</strong> Use um losango para comparar A > B
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 2: Validar Acesso (Idade >= 18)</div>
+                <div class="exercise-content">
+                    <strong>Problema:</strong> Crie um fluxograma que valide se uma pessoa pode entrar em um local (requer 18+ anos).<br>
+                    <strong>Dica:</strong> Leia a idade e compare com 18
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 3: Número Positivo, Negativo ou Zero</div>
+                <div class="exercise-content">
+                    <strong>Problema:</strong> Crie um fluxograma que leia um número e classifique como positivo, negativo ou zero.<br>
+                    <strong>Dica:</strong> Use duas decisões em cascata (primeiro > 0, depois < 0)
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 4: Aprovação em Disciplina (OR)</div>
+                <div class="exercise-content">
+                    <strong>Problema:</strong> Crie um fluxograma para verificar aprovação: (Média >= 7) OR (Nota Final >= 8).<br>
+                    <strong>Dica:</strong> Combine duas condições com OR (uma única decisão)
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <div class="exercise-title">Exercício 5: Login (Email AND Senha)</div>
+                <div class="exercise-content">
+                    <strong>Problema:</strong> Crie um fluxograma para validar login: (Email válido) AND (Senha correta).<br>
+                    <strong>Dica:</strong> Use duas decisões em série - primeira para email, segunda para senha
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>Abstração Lógica - Ferramenta de Aprendizado Interativa</strong></p>
+        <p>Professor Kleber Kamers - Desenvolvimento de sistemas</p>
+        <p>SENAI Brusque- Educação Profissional | 2026</p>
+    </footer>
+
+    <script>
+        let andValues = { A: false, B: false };
+        let orValues = { A: false, B: false };
+        let notValues = { A: false };
+
+        function switchTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleAnd(letter) {
+            andValues[letter] = !andValues[letter];
+            updateAndDisplay();
+        }
+
+        function updateAndDisplay() {
+            const a = andValues.A ? 'V' : 'F';
+            const b = andValues.B ? 'V' : 'F';
+            const result = andValues.A && andValues.B ? 'V' : 'F';
+            const resultClass = andValues.A && andValues.B ? 'true-value' : 'false-value';
+
+            document.getElementById('andResult').innerHTML = 
+                `<span class="${resultClass}">${a} AND ${b} = ${result}</span>`;
+
+            updateToggleVisual('andA', andValues.A);
+            updateToggleVisual('andB', andValues.B);
+        }
+
+        function toggleOr(letter) {
+            orValues[letter] = !orValues[letter];
+            updateOrDisplay();
+        }
+
+        function updateOrDisplay() {
+            const a = orValues.A ? 'V' : 'F';
+            const b = orValues.B ? 'V' : 'F';
+            const result = orValues.A || orValues.B ? 'V' : 'F';
+            const resultClass = orValues.A || orValues.B ? 'true-value' : 'false-value';
+
+            document.getElementById('orResult').innerHTML = 
+                `<span class="${resultClass}">${a} OR ${b} = ${result}</span>`;
+
+            updateToggleVisual('orA', orValues.A);
+            updateToggleVisual('orB', orValues.B);
+        }
+
+        function toggleNot(letter) {
+            notValues[letter] = !notValues[letter];
+            updateNotDisplay();
+        }
+
+        function updateNotDisplay() {
+            const a = notValues.A ? 'V' : 'F';
+            const result = !notValues.A ? 'V' : 'F';
+            const resultClass = !notValues.A ? 'true-value' : 'false-value';
+
+            document.getElementById('notResult').innerHTML = 
+                `<span class="${resultClass}">NOT ${a} = ${result}</span>`;
+
+            updateToggleVisual('notA', notValues.A);
+        }
+
+        function updateToggleVisual(elementId, isActive) {
+            const element = document.getElementById(elementId);
+            if (isActive) {
+                element.classList.add('active');
+            } else {
+                element.classList.remove('active');
+            }
+        }
+
+        updateAndDisplay();
+        updateOrDisplay();
+        updateNotDisplay();
+    </script>
+</body>
+</html>
